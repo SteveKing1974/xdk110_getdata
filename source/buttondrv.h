@@ -18,7 +18,7 @@ typedef void (*ButtonFunction)(ButtonID ID, ButtonState state);
 
 bool ButtonDrv_Init(void);
 
-void ButtonDrv_InstallCallback(ButtonID id, ButtonFunction func);
+void ButtonDrv_InstallCallback(ButtonFunction func);
 
 
 #endif

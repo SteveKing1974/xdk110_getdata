@@ -1,8 +1,13 @@
+#include "leddrv.h"
 
-#include "led.h"
+#include <led.h>
+
+#include <stddef.h>
+
+#include <XdkBoardHandle.h>
 
 /* own header files */
-#include "leddrv.h"
+
 
 static LED_handle_tp redLedHandle = (LED_handle_tp) NULL; /**< variable to store red led handle */
 static LED_handle_tp yellowLedHandle = (LED_handle_tp) NULL; /**< variable to store yellow led handle */
@@ -11,7 +16,7 @@ static LED_handle_tp orangeLedHandle = (LED_handle_tp) NULL; /**< variable to st
 
 bool LedDrv_Init(void)
 {
-    bool retVal = FALSE;
+    bool retVal = false;
 
     redLedHandle = LED_create(gpioRedLed_Handle, GPIO_STATE_OFF);
     if (redLedHandle != NULL)
@@ -24,7 +29,7 @@ bool LedDrv_Init(void)
     }
     if (orangeLedHandle != NULL)
     {
-        retVal = TRUE;
+        retVal = true;
     }
     return retVal;
 }

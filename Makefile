@@ -21,10 +21,12 @@ export BCDS_XDK_INCLUDES = \
 #List all the application source file under variable BCDS_XDK_APP_SOURCE_FILES in a similar pattern as below
 export BCDS_XDK_APP_SOURCE_FILES = \
 	$(BCDS_APP_SOURCE_DIR)/main.c \
-	$(BCDS_APP_SOURCE_DIR)/System.c \
-	$(BCDS_APP_SOURCE_DIR)/Comms.c \
-	$(BCDS_APP_SOURCE_DIR)/SensorData.c \
+	$(BCDS_APP_SOURCE_DIR)/system.c \
+	$(BCDS_APP_SOURCE_DIR)/comms.c \
+	$(BCDS_APP_SOURCE_DIR)/sensordata.c \
 	$(BCDS_APP_SOURCE_DIR)/protocol.c \
+	$(BCDS_APP_SOURCE_DIR)/leddrv.c \
+	$(BCDS_APP_SOURCE_DIR)/buttondrv.c \
 	
 .PHONY: clean debug release flash_debug_bin flash_release_bin
 

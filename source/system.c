@@ -17,8 +17,10 @@
 #include "timers.h"
 
 /* own header files */
-#include "Comms.h"
-#include "SensorData.h"
+#include "comms.h"
+#include "sensordata.h"
+#include "leddrv.h"
+#include "buttondrv.h"
 
 #include "protocol.h"
 
@@ -34,6 +36,20 @@ xTimerHandle systemTickHandle = NULL;
 
 static void systemInit(xTimerHandle xTimer);
 static void systemTick(xTimerHandle xTimer);
+
+static bool systemEnabled = false;
+
+void buttonCallback(ButtonID ID, ButtonState state)
+{
+	if (ID == BUTTON_1 && state==BUTTON_PRESSED)
+	{
+		systemEnabled = true;
+	}
+	if (ID == BUTTON_2 && state==BUTTON_PRESSED)
+	{
+		systemEnabled = false;
+	}
+}
 
 /**
  *  @brief
@@ -81,10 +97,13 @@ void systemInit(xTimerHandle xTimer)
 
 	bool initComplete = Comms_Init();
 	initComplete = initComplete && SensorData_Init();
+	initComplete = initComplete && ButtonDrv_Init();
+	initComplete = initComplete && LedDrv_Init();
 
 	//
 	if (initComplete)
 	{
+		ButtonDrv_InstallCallback(buttonCallback);
 		if (xTimerStart(systemTickHandle, TIMERBLOCKTIME) != pdTRUE)
 		{
 			assert(false);
@@ -115,16 +134,28 @@ void systemTick(xTimerHandle xTimer)
 		remoteIP = 0;
 	}
 
-	if (remoteIP != 0)
+	if (systemEnabled)
 	{
-		SensorDataStruct sensorDat;
-		SensorData_Read(&sensorDat);
+		LedDrv_On(YELLOW_LED);
+		LedDrv_Off(RED_LED);
 
-		Protocol_EncodeSensorData(&sensorDat, commandData, &dataLength);
-		Protocol_Encode(CMD_SENSOR_DATA, commandData, dataLength, rawData, &commandLength);
+		if (remoteIP != 0)
+		{
+			SensorDataStruct sensorDat;
+			SensorData_Read(&sensorDat);
 
-		Comms_SendData(rawData, commandLength, remoteIP);
+			Protocol_EncodeSensorData(&sensorDat, commandData, &dataLength);
+			Protocol_Encode(CMD_SENSOR_DATA, commandData, dataLength, rawData, &commandLength);
+
+			Comms_SendData(rawData, commandLength, remoteIP);
+		}
 	}
+	else
+	{
+		LedDrv_Off(YELLOW_LED);
+		LedDrv_On(RED_LED);
+	}
+
 }
 
 
