@@ -44,7 +44,7 @@ static void systemTick(xTimerHandle xTimer);
 void appInitSystem(xTimerHandle xTimer)
 {
     BCDS_UNUSED(xTimer);
-    uint32_t Ticks = UINT32_C(1000);
+    uint32_t Ticks = UINT32_C(50);
 
     if (Ticks != UINT32_MAX) /* Validated for portMAX_DELAY to assist the task to wait Infinitely (without timing out) */
     {
@@ -106,7 +106,6 @@ void systemTick(xTimerHandle xTimer)
 	uint16_t commandLength = Comms_RecvData(rawData, sizeof(rawData), &tempIP);
 	const Commands cmd = Protocol_Decode(rawData, commandLength, commandData, &dataLength);
 
-	printf("Command %i %i\r\n", commandLength, cmd);
 	if (cmd == CMD_START_SENDING)
 	{
 		remoteIP = tempIP;
@@ -118,7 +117,6 @@ void systemTick(xTimerHandle xTimer)
 
 	if (remoteIP != 0)
 	{
-		printf("Sending to %x\r\n", remoteIP);
 		SensorDataStruct sensorDat;
 		SensorData_Read(&sensorDat);
 
